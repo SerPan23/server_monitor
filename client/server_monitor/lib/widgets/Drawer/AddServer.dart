@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:server_monitor/data/hiveboxes.dart';
 import 'package:server_monitor/main.dart';
+import 'package:server_monitor/models/ServersModel.dart';
 
 class AddServer extends StatelessWidget {
   const AddServer({Key key}) : super(key: key);
@@ -28,6 +31,7 @@ class AddServer extends StatelessWidget {
 void testAlert(BuildContext context) {
   final nameController = TextEditingController();
   final ipController = TextEditingController();
+  // Navigator.of(context, rootNavigator: true).pop();
   var alert = AlertDialog(
     scrollable: true,
     title: Text('Добавить сервер'),
@@ -64,7 +68,11 @@ void testAlert(BuildContext context) {
       FlatButton(
         child: Text("Добавить"),
         onPressed: () {
-          print('name: ' + nameController.text + '\nip: ' + ipController.text);
+          // print('name: ' + nameController.text + '\nip: ' + ipController.text);
+          // servers.add([nameController.text, ipController.text]);
+          Box<Server> contactsBox = Hive.box<Server>(HiveBoxes.servers);
+          contactsBox
+              .add(Server(name: nameController.text, ip: ipController.text));
           Navigator.of(context, rootNavigator: true).pop();
         },
       )

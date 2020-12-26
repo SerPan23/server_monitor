@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:server_monitor/data/hiveboxes.dart';
+import 'package:server_monitor/models/ServersModel.dart';
+
 import 'widgets/Drawer/MyDrawer.dart';
 import 'widgets/InfoBlock.dart';
 import 'widgets/NameBlock.dart';
 import 'custom_icons_icons.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(ServerAdapter());
+  await Hive.openBox<Server>(HiveBoxes.servers);
+  // serversbox.add(Server(name: 'server', ip: '192.168.1.1'));
   runApp(MyApp());
 }
 
