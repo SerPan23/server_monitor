@@ -60,10 +60,28 @@ class _ServersListState extends State<ServersList> {
           itemBuilder: (context, index) {
             Server res = box.getAt(index);
             return Dismissible(
-              background: Container(color: Colors.red),
+              background: Container(
+                color: Colors.red,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                alignment: AlignmentDirectional.centerStart,
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              ),
+              secondaryBackground: Container(
+                color: Colors.red,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                alignment: AlignmentDirectional.centerEnd,
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              ),
               key: Key(res.id),
               onDismissed: (direction) {
-                box.delete(res.id);
+                // box.delete(res.id);
+                box.deleteAt(index);
               },
               child: DrawerItem(
                 title: res.name,
