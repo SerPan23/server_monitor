@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 
 import 'package:server_monitor/data/hiveboxes.dart';
+import 'package:server_monitor/models/Data.dart';
 import 'package:server_monitor/models/ServersModel.dart';
 
 import 'DrawerItem.dart';
@@ -53,7 +55,7 @@ class _ServersListState extends State<ServersList> {
       builder: (context, Box<Server> box, _) {
         if (box.values.isEmpty)
           return Center(
-            child: Text("Servers list is empty"),
+            child: Text("Список серверов пуст"),
           );
         return ListView.builder(
           itemCount: box.values.length,
@@ -78,12 +80,25 @@ class _ServersListState extends State<ServersList> {
                   color: Colors.white,
                 ),
               ),
-              key: Key(res.id),
+              key: Key(UniqueKey().toString()),
+              // key: Key(index.toString()),
               onDismissed: (direction) {
                 // box.delete(res.id);
-                box.deleteAt(index);
+                // setState(() {
+                //   // res.removeAt(index);
+                //   box.deleteAt(index);
+                // });
+                setState(() {
+                  // box.deleteAt(index);
+                  var server = box.getAt(index);
+                  final model = Provider.of<Data>(context, listen: false);
+                  if (server.id == model.getServerId)
+                    model.changeServer(null, null, null);
+                  box.deleteAt(index);
+                });
               },
               child: DrawerItem(
+                id: res.id,
                 title: res.name,
                 subtitle: res.ip,
               ),

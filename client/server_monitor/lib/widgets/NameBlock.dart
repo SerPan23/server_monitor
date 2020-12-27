@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
+import 'package:server_monitor/data/hiveboxes.dart';
+import 'package:server_monitor/models/Data.dart';
+import 'package:server_monitor/models/ServersModel.dart';
 
 class NameBlock extends StatelessWidget {
+  // final model = Provider.of<Data>().;
+  final value;
+
+  const NameBlock({Key key, this.value}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -9,14 +18,14 @@ class NameBlock extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Server name',
+              value.getServerName,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              'ip: 192.168.1.1',
+              value.getServerIp,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w300,

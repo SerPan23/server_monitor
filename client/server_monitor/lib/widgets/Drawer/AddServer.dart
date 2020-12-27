@@ -70,9 +70,12 @@ void testAlert(BuildContext context) {
         onPressed: () {
           // print('name: ' + nameController.text + '\nip: ' + ipController.text);
           // servers.add([nameController.text, ipController.text]);
-          Box<Server> contactsBox = Hive.box<Server>(HiveBoxes.servers);
-          contactsBox
-              .add(Server(name: nameController.text, ip: ipController.text));
+          Box<Server> serversBox = Hive.box<Server>(HiveBoxes.servers);
+          serversBox.add(Server(
+              id: UniqueKey().toString(),
+              name: nameController.text,
+              ip: ipController.text));
+
           Navigator.of(context, rootNavigator: true).pop();
         },
       )

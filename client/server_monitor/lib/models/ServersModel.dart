@@ -10,5 +10,5 @@ class Server {
   @HiveField(2)
   String ip;
 
-  Server({this.name, this.ip});
+  Server({this.id, this.name, this.ip});
 }

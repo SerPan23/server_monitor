@@ -1,8 +1,68 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:server_monitor/custom_icons_icons.dart';
 import '../custom_icons_icons.dart';
 
-class InfoBlock extends StatelessWidget {
+class InfoBlock extends StatefulWidget {
+  final value;
+  const InfoBlock({Key key, this.value}) : super(key: key);
+
+  @override
+  _InfoBlockState createState() => _InfoBlockState(value);
+}
+
+class _InfoBlockState extends State<InfoBlock> {
+  final _value;
+  Timer _timer;
+  _InfoBlockState(this._value) {
+    _timer = new Timer.periodic(Duration(seconds: 10), (timer) {
+      // print(_value.getServerId);
+      post();
+    });
+  }
+
+  void initState() {
+    super.initState();
+    post();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  var _data = {'cpu': 0.0, 'ram': 0.0, 'hdd': 0.0};
+
+  void post() async {
+    try {
+      var header = {
+        "Content-Type": "application/json",
+      };
+      // var url = 'http://192.168.1.5:8000/servermonitor';
+      var url = _value.getServerIp;
+      var response = await http.get(url, headers: header);
+      if (response.statusCode == 200) {
+        // print(json.decode(response.body));
+        var res = json.decode(response.body);
+        setState(() {
+          _data['cpu'] = res['cpu'];
+          _data['ram'] = res['ram'];
+          _data['hdd'] = res['hdd'];
+          print(_data);
+        });
+      } else {
+        print(response.body);
+      }
+    } on SocketException catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -22,7 +82,9 @@ class InfoBlock extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Item(icon: Icons.rotate_right, data: 30),
-                  Item(icon: CustomIcons.cpu, data: '30%'),
+                  Item(
+                      icon: CustomIcons.cpu,
+                      data: _data['cpu'].toString() + '%'),
                 ],
               ),
             ),
@@ -31,9 +93,13 @@ class InfoBlock extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Item(icon: CustomIcons.gpu, data: '1%'),
-                  Item(icon: CustomIcons.ram, data: '20%'),
-                  Item(icon: CustomIcons.harddrive, data: '9%'),
+                  // Item(icon: CustomIcons.gpu, data: '1%'),
+                  Item(
+                      icon: CustomIcons.ram,
+                      data: _data['ram'].toString() + '%'),
+                  Item(
+                      icon: CustomIcons.harddrive,
+                      data: _data['hdd'].toString() + '%'),
                 ],
               ),
             ),
